@@ -1,0 +1,43 @@
+{
+    "paths": [
+        {
+            "name": "/questions",
+            "lambdaFunction": "TwitchQuestions",
+            "privacy": {
+                "open": true
+            },
+            "policyResourceName": "/questions"
+        },
+        {
+            "name": "/question",
+            "lambdaFunction": "TwitchQuestions",
+            "privacy": {
+                "open": true
+            },
+            "policyResourceName": "/question"
+        }
+    ],
+    "resourceName": "TwitchQuestions",
+    "apiName": "TwitchQuestions",
+    "functionArns": [
+        {
+            "lambdaFunction": "TwitchQuestions"
+        }
+    ],
+    "privacy": {
+        "auth": 0,
+        "unauth": 0,
+        "authRoleName": "amplify-askjoshaquestion-dev-21830-authRole",
+        "unAuthRoleName": "amplify-askjoshaquestion-dev-21830-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "TwitchQuestions",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ]
+}
