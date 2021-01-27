@@ -1,8 +1,9 @@
 var express = require('express')
 var bodyParser = require('body-parser')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
-const dynamodb = new AWS.DynamoDB.DocumentClient({region: 'us-east-1'})
-const tableName = '';
+const AWS = require('aws-sdk')
+const tableName = "TwitchQuestions-dev"
+const docClient = new AWS.DynamoDB.DocumentClient({region: 'us-east-1'})
 
 // declare a new express app
 var app = express()
@@ -16,15 +17,28 @@ app.use(function(req, res, next) {
   next()
 });
 
-app.get('/questions', function(req, res) {
+app.get('/questions', async (req, res) => {
   // get list of all questions
-  res.json({success: 'post call succeed!', url: req.url, body: req.body})
+  let questions = await getQuestions();
+  res.json(req.query.user_id);
 });
 
-app.post('/question', function(req, res) {
+app.post('/question', async (req, res) => {
   // post a question
-  res.json({success: 'post call succeed!', url: req.url, body: req.body})
+  res.json({success: 'alright', url: req.url, body: req.body})
 });
+
+const getQuestions = async () => {
+  try {
+    var params = {
+      TableName: tableName,
+    }
+    const data = await docClient.scan(params).promise()
+    return data;
+  } catch (err) {
+    console.log(err)
+  }
+}
 
 app.listen(3000, function() {
     console.log("App started")

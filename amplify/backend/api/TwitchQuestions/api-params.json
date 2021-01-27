@@ -1,20 +1,19 @@
 {
     "paths": [
         {
-            "name": "/questions",
-            "lambdaFunction": "TwitchQuestions",
-            "privacy": {
-                "open": true
-            },
-            "policyResourceName": "/questions"
-        },
-        {
             "name": "/question",
             "lambdaFunction": "TwitchQuestions",
             "privacy": {
                 "open": true
             },
             "policyResourceName": "/question"
+        },
+        {
+            "name": "/questions",
+            "lambdaFunction": "TwitchQuestions",
+            "privacy": {
+                "open": true
+            }
         }
     ],
     "resourceName": "TwitchQuestions",
@@ -39,5 +38,6 @@
                 "Arn"
             ]
         }
-    ]
+    ],
+    "uuid": "86d4b369"
 }

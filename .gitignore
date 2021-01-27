@@ -9,6 +9,7 @@ public/
 node_modules/
 aws-exports.js
 awsconfiguration.json
+AskJoshAQuestion.json
 
 #amplify
 amplify/\#current-cloud-backend
