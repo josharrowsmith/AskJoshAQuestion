@@ -24,11 +24,12 @@ export default () => {
 
     async function fetchQuestions() {
         twitch.rig.log('getting questions', UserId)
-        fetch(`${ROOT_URL}questions?user_id=hey`,{
+        await fetch(`${ROOT_URL}/questions?user_id=${UserId}`,{
             method: 'GET',
             headers: new Headers({'Content-Type': 'application/json'})
         })
-        .then(data => twitch.rig.log(data))
+        .then(data => data.json())
+        .then(data => console.log(data))
         .catch(err => twitch.rig.log("wtf"))
         
     }
