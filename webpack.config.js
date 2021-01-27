@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require("path")
 const webpack = require("webpack")
+const dotenv = require('dotenv');
 
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -22,12 +23,22 @@ module.exports = (_env,argv)=> {
     },
   }
 
+  // call dotenv and it will return an Object with a parsed key 
+  const env = dotenv.config().parsed;
+
+  // reduce it to a nice object, the same as before
+  const envKeys = Object.keys(env).reduce((prev, next) => {
+    prev[`process.env.${next}`] = JSON.stringify(env[next]);
+    return prev;
+  }, {});
+
   let entry = {}
 
   // edit webpack plugins here!
   let plugins = [
     new CleanWebpackPlugin(['dist']),
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.DefinePlugin(envKeys)
   ]
 
   for(name in entryPoints){

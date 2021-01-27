@@ -10,6 +10,7 @@ node_modules/
 aws-exports.js
 awsconfiguration.json
 AskJoshAQuestion.json
+.env
 
 #amplify
 amplify/\#current-cloud-backend

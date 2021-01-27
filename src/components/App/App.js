@@ -4,12 +4,11 @@ import { setToken, isLoggedIn, getStream } from "../../util"
 import 'regenerator-runtime/runtime';
 
 const twitch = window.Twitch.ext;
-const ROOT_URL = "https://97wdpxpe85.execute-api.us-east-1.amazonaws.com/dev"
 
 export default () => {
-
+    
     const [UserId, setUserId] = useState('');
-    const [token, getToken] = useState('');
+    const [token, setToken] = useState('');
 
     useEffect(() => {
         getTwitchData();
@@ -17,19 +16,34 @@ export default () => {
 
     async function getTwitchData() {
         twitch.onAuthorized((auth) => {
-            twitch.rig.log(auth.userId, auth.channelId)
-            setUserId(auth.userId)
+            const authedUser = twitch.viewer;
+        if (!authedUser.isLinked) {
+            return;
+        }
+            fetch(`https://api.twitch.tv/helix/users?id=${authedUser.id}`, {
+                headers: new Headers({'Client-ID':  `${process.env.CLIENTID}`,  "Authorization": `Bearer ${process.env.OAUTH}` })
+            })
+            .then((res) => res.json())
+            .then(res => {
+                const [user] = res.data;
+                setUserId(user.id) 
+                setToken(auth.token)
+                twitch.rig.log(auth.channelId, user.id)
+            })
         })
     }
 
     async function fetchQuestions() {
         twitch.rig.log('getting questions', UserId)
-        await fetch(`${ROOT_URL}/questions?user_id=${UserId}`,{
+        await fetch(`${process.env.ROOT_URL}/questions?user_id=${UserId}`,{
             method: 'GET',
-            headers: new Headers({'Content-Type': 'application/json'})
+            headers: new Headers({'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`})
         })
         .then(data => data.json())
-        .then(data => console.log(data))
+        .then(data => {
+            console.log(data)
+            twitch.rig.log(data)
+        })
         .catch(err => twitch.rig.log("wtf"))
         
     }

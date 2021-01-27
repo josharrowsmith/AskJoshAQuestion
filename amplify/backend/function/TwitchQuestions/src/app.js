@@ -21,9 +21,9 @@ app.use(function(req, res, next) {
 
 app.get('/questions', async (req, res) => {
   // get list of all questions
-  console.log(req.query.user_id)
-  let questions = await getQuestions();
-  res.json(req.query.user_id);
+  console.log(req.query.use)
+  let questions = await getQuestions(req.query.user_id);
+  res.json(questions);
 });
 
 app.post('/question', async (req, res) => {
@@ -31,13 +31,16 @@ app.post('/question', async (req, res) => {
   res.json({success: 'alright', url: req.url, body: req.body})
 });
 
-const getQuestions = async () => {
+const getQuestions = async (userid) => {
+  var params = {
+    ExpressionAttributeValues: { ":userId":  userid}, 
+    KeyConditionExpression: "user_id = :userId",
+    TableName: tableName
+   };
+
   try {
-    var params = {
-      TableName: tableName,
-    }
-    const data = await docClient.scan(params).promise()
-    return data;
+    let data = await docClient.query(params).promise();
+    return data.Items;
   } catch (err) {
     console.log(err)
   }
