@@ -1,4 +1,11 @@
-var express = require('express')
+/* Amplify Params - DO NOT EDIT
+	API_TWITCHQUESTIONS_APIID
+	API_TWITCHQUESTIONS_APINAME
+	ENV
+	REGION
+	STORAGE_TWITCHQUESTIONS_ARN
+	STORAGE_TWITCHQUESTIONS_NAME
+Amplify Params - DO NOT EDIT */var express = require('express')
 var bodyParser = require('body-parser')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
 const AWS = require('aws-sdk')
@@ -19,9 +26,15 @@ app.use(function(req, res, next) {
   next()
 });
 
+app.get('/channelquestions', async (req, res) => {
+  // get list of all channel questions
+  console.log(req.query.channel_id)
+  let data2 = await getChannelQuestions(req.query.channel_id);
+  res.json(data2);
+});
+
 app.get('/questions', async (req, res) => {
   // get list of all questions
-  console.log(req.query.use)
   let questions = await getQuestions(req.query.user_id);
   res.json(questions);
 });
@@ -30,6 +43,22 @@ app.post('/question', async (req, res) => {
   // post a question
   res.json({success: 'alright', url: req.url, body: req.body})
 });
+
+const getChannelQuestions = async (channelid) => {
+  var params2 = {
+    ExpressionAttributeValues: { ":channelId":  channelid}, 
+    KeyConditionExpression: "channel_id = :channelId", 
+    IndexName: "channel_id-index",
+    TableName: tableName
+   };
+
+  try {
+    let data3 = await docClient.query(params2).promise();
+    return data3;
+  } catch (err) {
+    console.log(err)
+  }
+}
 
 const getQuestions = async (userid) => {
   var params = {
@@ -45,6 +74,8 @@ const getQuestions = async (userid) => {
     console.log(err)
   }
 }
+
+
 
 app.listen(3000, function() {
     console.log("App started")

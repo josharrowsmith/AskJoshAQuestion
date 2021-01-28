@@ -104,7 +104,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-askjoshaquestion-dev-21830-deployment",
-          "S3Key": "amplify-builds/TwitchQuestions-6f7253337a4b77646172-build.zip"
+          "S3Key": "amplify-builds/TwitchQuestions-366e793142754e726567-build.zip"
         }
       }
     },
@@ -208,33 +208,28 @@
             {
               "Effect": "Allow",
               "Action": [
-                "lambda:Create*",
-                "lambda:Put*",
-                "lambda:Add*",
-                "lambda:Get*",
-                "lambda:List*",
-                "lambda:Invoke*",
-                "lambda:Update*",
-                "lambda:Delete*",
-                "lambda:Remove*"
+                "apigateway:POST",
+                "apigateway:PUT",
+                "apigateway:GET",
+                "apigateway:HEAD",
+                "apigateway:OPTIONS",
+                "apigateway:PATCH",
+                "apigateway:DELETE"
               ],
               "Resource": [
                 {
                   "Fn::Join": [
                     "",
                     [
-                      "arn:aws:lambda:",
+                      "arn:aws:apigateway:",
                       {
                         "Ref": "AWS::Region"
                       },
-                      ":",
+                      "::/restapis/",
                       {
-                        "Ref": "AWS::AccountId"
+                        "Ref": "apiTwitchQuestionsApiName"
                       },
-                      ":function:",
-                      {
-                        "Ref": "functionTwitchQuestionsName"
-                      }
+                      "/*"
                     ]
                   ]
                 }

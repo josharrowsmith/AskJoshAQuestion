@@ -9,6 +9,7 @@ export default () => {
     
     const [UserId, setUserId] = useState('');
     const [token, setToken] = useState('');
+    const [channelId, setChannelId] = useState('')
 
     useEffect(() => {
         getTwitchData();
@@ -28,6 +29,7 @@ export default () => {
                 const [user] = res.data;
                 setUserId(user.id) 
                 setToken(auth.token)
+                setChannelId(auth.channelId)
                 twitch.rig.log(auth.channelId, user.id)
             })
         })
