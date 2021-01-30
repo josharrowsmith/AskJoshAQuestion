@@ -30,7 +30,7 @@ export default () => {
                 setUserId(user.id) 
                 setToken(auth.token)
                 setChannelId(auth.channelId)
-                twitch.rig.log(auth.channelId, user.id)
+                twitch.rig.log(auth.token, user.id)
             })
         })
     }
@@ -47,14 +47,17 @@ export default () => {
             twitch.rig.log(data)
         })
         .catch(err => twitch.rig.log("wtf"))
-        
+    }
+
+    async function AskQuestion() {
+       twitch.rig.log("asking now")
     }
 
     return (
         <>
             <h1>Get Questions</h1>
             <p>{UserId}</p>
-            <button onClick={fetchQuestions} title="click">Click Me</button>
+            <button onClick={fetchQuestions} title="click">Ask Question</button>
         </>
     )
 }
