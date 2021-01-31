@@ -10,6 +10,8 @@ export default () => {
     const [UserId, setUserId] = useState('');
     const [token, setToken] = useState('');
     const [channelId, setChannelId] = useState('')
+    const [displayName, setDisplayName] = useState('')
+
 
     useEffect(() => {
         getTwitchData();
@@ -22,7 +24,8 @@ export default () => {
             return;
         }
             fetch(`https://api.twitch.tv/helix/users?id=${authedUser.id}`, {
-                headers: new Headers({'Client-ID':  `${process.env.CLIENTID}`,  "Authorization": `Bearer ${process.env.OAUTH}` })
+                headers: new Headers({'Client-ID':  `${process.env.CLIENTID}`,  "Authorization": `Bearer ${process.env.OAUTH}` }),
+                mode: 'cors'
             })
             .then((res) => res.json())
             .then(res => {
@@ -30,7 +33,8 @@ export default () => {
                 setUserId(user.id) 
                 setToken(auth.token)
                 setChannelId(auth.channelId)
-                twitch.rig.log(auth.token, user.id)
+                setDisplayName(user.displayName)
+                twitch.rig.log(auth.token, user)
             })
         })
     }
@@ -50,14 +54,26 @@ export default () => {
     }
 
     async function AskQuestion() {
-       twitch.rig.log("asking now")
+        fetch(`${process.env.ROOT_URL}/question`, {
+            method: 'POST',
+            headers: new Headers({'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}),
+            body: JSON.stringify({
+                  user_id: `${UserId}`,
+                  channel_id: `${channelId}`,
+                  question: "hey duuuude",
+                  postedToForum: false,
+                  displayName: displayName
+            })
+        })
+        .then(result => result.json())
+        .then(result => twitch.rig.log(result))
     }
 
     return (
         <>
             <h1>Get Questions</h1>
             <p>{UserId}</p>
-            <button onClick={fetchQuestions} title="click">Ask Question</button>
+            <button onClick={AskQuestion} title="click">Ask Question</button>
         </>
     )
 }

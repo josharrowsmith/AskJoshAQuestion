@@ -2,7 +2,7 @@ var express = require('express')
 var bodyParser = require('body-parser')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
 const AWS = require('aws-sdk')
-const jwt = require('express-jwt')
+var jwt = require('express-jwt')
 const uuidv4 = require('uuid/v4');
 const tableName = "TwitchQuestions-dev"
 const docClient = new AWS.DynamoDB.DocumentClient({region: 'us-east-1'})
@@ -22,23 +22,19 @@ app.use(function(req, res, next) {
 });
 
 // Auth protected routes for twitch extension
-app.use(jwt({
-  secret: 'hello world !',
-  algorithms: ['HS256'],
-  credentialsRequired: false,
-  getToken: function fromHeaderOrQuerystring (req) {
-    if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
-        return req.headers.authorization.split(' ')[1];
-    } else if (req.query && req.query.token) {
-      return req.query.token;
-    }
-    return null;
-  }
-}));
+// app.use(jwt({ secret: secret, algorithms: ['HS256'],
+//   getToken: function fromHeaderOrQuerystring (req) {
+//     if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+//         return req.headers.authorization.split(' ')[1];
+//     } else if (req.query && req.query.token) {
+//       return req.query.token;
+//     }
+//     return null;
+//   }
+// }));
 
 app.get('/channelquestions', async (req, res) => {
   // get list of all channel questions
-  console.log(req.query.channel_id)
   let data2 = await getChannelQuestions(req.query.channel_id);
   res.json(data2);
 });
@@ -51,7 +47,9 @@ app.get('/questions', async (req, res) => {
 
 app.post('/question', async (req, res) => {
   // post a question
-  res.json({success: 'alright', url: req.url, body: req.body})
+  console.log(req.body);
+  let put = await postQuestion(req.body);
+  res.json(put);
 });
 
 const getChannelQuestions = async (channelid) => {
@@ -83,6 +81,28 @@ const getQuestions = async (userid) => {
   } catch (err) {
     console.log(err)
   }
+}
+
+const postQuestion = async(questionBody) => {
+  console.log(questionBody);
+  const { user_id, channel_id, question, postedToForum, displayName } = questionBody;
+  const id = uuidv4(); 
+  var params = {
+    TableName: tableName,
+    Item: {
+      id, user_id, channel_id, question, postedToForum, displayName
+    }
+  }
+
+  try{
+    let data = await dynamodb.put(params).promise();
+    console.log(data);
+    return data;
+  } catch(error) {
+      return error;
+
+  }
+
 }
 
 app.listen(3000, function() {
