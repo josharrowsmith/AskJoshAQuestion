@@ -14,6 +14,7 @@ export default () => {
     const [displayName, setDisplayName] = useState('')
     const [form, setForm] = useState({ question: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [result, setResult] = useState("");
 
     useEffect(() => {
         getTwitchData();
@@ -36,21 +37,19 @@ export default () => {
                 setToken(auth.token)
                 setChannelId(auth.channelId)
                 setDisplayName(user.displayName)
-                twitch.rig.log(auth.token, user)
+                fetchQuestions(user)
             })
         })
     }
 
-    async function fetchQuestions() {
-        twitch.rig.log('getting questions', UserId)
-        await fetch(`${process.env.ROOT_URL}/channelquestions?channel_id=${channelId}`,{
+    async function fetchQuestions(user) {
+        await fetch(`${process.env.ROOT_URL}/questions?user_id=${user.id}`,{
             method: 'GET',
             headers: new Headers({'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`})
         })
         .then(data => data.json())
         .then(data => {
-            console.log(data)
-            twitch.rig.log(data)
+            setResult(data)
         })
         .catch(err => twitch.rig.log("wtf"))
     }
@@ -85,29 +84,36 @@ export default () => {
     };
 
     return (
-        <div class="dspClass">
-             <div class="container loginplease">
-                <h2 class="title">Ask A Question</h2>
-                <p>To use Ask A Question, you need to share your TwitchID with us
-                    <span id="authAQuestion">Click here</span>
-                </p>
-            </div>
-            <div class="container askQuestion">
-                <h2 class="title">Ask A Question</h2>
-                <textarea class="question-input" v-model="questionText" placeholder="Ask the broadcaster a question..."></textarea>
-                <div class="toolbar">
-                    <button class="askQuestionBtn"  variant="primary">Submit</button>
+        <div className="dspClassName">
+            <div className="container askQuestion">
+                <h2 className="title">Ask A Question</h2>
+                <textarea 
+                    className="question-input" 
+                    placeholder="Ask the broadcaster a question..."
+                    name='question'
+                    onChange={handleChange}>
+                </textarea>
+                <div className="toolbar">
+                    <button className="askQuestionBtn" onClick={handleSubmit} variant="primary">Submit</button>
                 </div>
             </div>
-            <div class="container questions">
-                <h3 class="title">Previous Questions </h3>
-                <ul class="question-list">
-                    <li>
-                        <div class="question-item">
-                            <p class="question-item__question"><span>Q:</span>dude</p>
-                            <p class="question-item__answer"><span>A:</span> cool</p>
-                        </div>
-                    </li>
+            <div className="container questions">
+                <h3 className="title">Previous Questions </h3>
+                <ul className="question-list">
+                    {!Object.keys(result).length > 0 && (
+                         <p className="question-item__question">No Questions found</p>
+                    )}
+                    {Object.entries(result).map(([key, val], i) => { 
+                        console.log(key, val)
+                        return (
+                        <li key={key}>
+                            <div className="question-item">
+                                <p className="question-item__question"><span>Q:</span>{val.question}</p>
+                                <p className="question-item__answer"><span>A:</span> there are none</p>
+                            </div>
+                        </li> 
+                        )
+                    })}
                 </ul>
             </div>
         </div>

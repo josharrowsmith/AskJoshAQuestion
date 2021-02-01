@@ -11,6 +11,7 @@ export default () => {
     const [UserId, setUserId] = useState('');
     const [token, setToken] = useState('');
     const [channelId, setChannelId] = useState('')
+    const [result, setResult] = useState('')
 
     useEffect(() => {
         getTwitchData();
@@ -31,21 +32,21 @@ export default () => {
                 setUserId(user.id) 
                 setToken(auth.token)
                 setChannelId(auth.channelId)
-                twitch.rig.log(auth.channelId, user.id)
+                fetchQuestions(auth)
             })
         })
     }
 
-    async function fetchQuestions() {
+    async function fetchQuestions(auth) {
         twitch.rig.log('getting questions', UserId)
-        await fetch(`${process.env.ROOT_URL}/questions?user_id=${UserId}`,{
+        await fetch(`${process.env.ROOT_URL}/channelquestions?channel_id=${auth.channelId}`,{
             method: 'GET',
             headers: new Headers({'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`})
         })
         .then(data => data.json())
         .then(data => {
+            setResult(data.Items)
             console.log(data)
-            twitch.rig.log(data)
         })
         .catch(err => twitch.rig.log("wtf"))
     }
@@ -56,10 +57,11 @@ export default () => {
             <h3 class="title"> Channel Questions Test </h3> 
             <hr />
             <ul class="question-list">
+                {Object.entries(result).map(([key, val], i) => (
                 <li class="question-item">
-                    <h2 class="question-item__question">question</h2>
+                    <h2 class="question-item__question">{val.question}</h2>
                     <div class="row">
-                        <p class="question-item__submitted-by">Submitted by </p>
+                        <p class="question-item__submitted-by">{val.displayName}</p>
                         <img class="question-item__checkmark" v-if="showCheckMark[index]" src="../assets/checkmark.png" />
                         <button class="question-item__button question-item__answer-button">Answer</button>
                     </div>
@@ -70,6 +72,7 @@ export default () => {
                         <button class="question-item__button question-item__answer-submit">Submit</button>
                     </div>
                 </li>
+                ))}
             </ul>
         </div>
     </div>
