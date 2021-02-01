@@ -73,7 +73,7 @@ export default () => {
         <>
             <h1>Get Questions</h1>
             <p>{UserId}</p>
-            <button onClick={AskQuestion} title="click">Ask Question</button>
+            <button onClick={fetchQuestions} title="click">Ask Question</button>
         </>
     )
 }

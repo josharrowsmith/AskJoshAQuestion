@@ -21,18 +21,6 @@ app.use(function(req, res, next) {
   next()
 });
 
-// Auth protected routes for twitch extension
-// app.use(jwt({ secret: secret, algorithms: ['HS256'],
-//   getToken: function fromHeaderOrQuerystring (req) {
-//     if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
-//         return req.headers.authorization.split(' ')[1];
-//     } else if (req.query && req.query.token) {
-//       return req.query.token;
-//     }
-//     return null;
-//   }
-// }));
-
 app.get('/channelquestions', async (req, res) => {
   // get list of all channel questions
   let data2 = await getChannelQuestions(req.query.channel_id);
@@ -95,7 +83,7 @@ const postQuestion = async(questionBody) => {
   }
 
   try{
-    let data = await dynamodb.put(params).promise();
+    let data = await docClient.put(params).promise();
     console.log(data);
     return data;
   } catch(error) {
