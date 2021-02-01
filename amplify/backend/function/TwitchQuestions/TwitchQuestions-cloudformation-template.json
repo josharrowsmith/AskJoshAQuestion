@@ -10,18 +10,6 @@
     "env": {
       "Type": "String"
     },
-    "functionTwitchQuestionsName": {
-      "Type": "String",
-      "Default": "functionTwitchQuestionsName"
-    },
-    "apiTwitchQuestionsApiName": {
-      "Type": "String",
-      "Default": "apiTwitchQuestionsApiName"
-    },
-    "apiTwitchQuestionsApiId": {
-      "Type": "String",
-      "Default": "apiTwitchQuestionsApiId"
-    },
     "storageTwitchQuestionsName": {
       "Type": "String",
       "Default": "storageTwitchQuestionsName"
@@ -76,15 +64,6 @@
             "REGION": {
               "Ref": "AWS::Region"
             },
-            "FUNCTION_TWITCHQUESTIONS_NAME": {
-              "Ref": "functionTwitchQuestionsName"
-            },
-            "API_TWITCHQUESTIONS_APINAME": {
-              "Ref": "apiTwitchQuestionsApiName"
-            },
-            "API_TWITCHQUESTIONS_APIID": {
-              "Ref": "apiTwitchQuestionsApiId"
-            },
             "STORAGE_TWITCHQUESTIONS_NAME": {
               "Ref": "storageTwitchQuestionsName"
             },
@@ -103,8 +82,8 @@
         "Layers": [],
         "Timeout": "25",
         "Code": {
-          "S3Bucket": "amplify-askjoshaquestion-dev-21830-deployment",
-          "S3Key": "amplify-builds/TwitchQuestions-6a7a373349504d493137-build.zip"
+          "S3Bucket": "amplify-askjoshaquestion-dev-21909-deployment",
+          "S3Key": "amplify-builds/TwitchQuestions-44337348567033586741-build.zip"
         }
       }
     },
@@ -114,12 +93,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "askjoshaquestionLambdaRole68fec1e2",
+            "askjoshaquestionLambdaRole8ea33b81",
             {
               "Fn::Join": [
                 "",
                 [
-                  "askjoshaquestionLambdaRole68fec1e2",
+                  "askjoshaquestionLambdaRole8ea33b81",
                   "-",
                   {
                     "Ref": "env"
@@ -205,36 +184,6 @@
         "PolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": [
-                "apigateway:POST",
-                "apigateway:PUT",
-                "apigateway:GET",
-                "apigateway:HEAD",
-                "apigateway:OPTIONS",
-                "apigateway:PATCH",
-                "apigateway:DELETE"
-              ],
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:apigateway:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      "::/restapis/",
-                      {
-                        "Ref": "apiTwitchQuestionsApiName"
-                      },
-                      "/*"
-                    ]
-                  ]
-                }
-              ]
-            },
             {
               "Effect": "Allow",
               "Action": [

@@ -1,4 +1,10 @@
 {
+  "storage": {
+    "TwitchQuestions": {
+      "service": "DynamoDB",
+      "providerPlugin": "awscloudformation"
+    }
+  },
   "function": {
     "TwitchQuestions": {
       "build": true,
@@ -30,12 +36,6 @@
           ]
         }
       ]
-    }
-  },
-  "storage": {
-    "TwitchQuestions": {
-      "service": "DynamoDB",
-      "providerPlugin": "awscloudformation"
     }
   }
 }

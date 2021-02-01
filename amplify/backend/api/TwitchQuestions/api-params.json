@@ -9,14 +9,14 @@
             "policyResourceName": "/question"
         },
         {
-            "name": "/questions",
+            "name": "/channelquestions",
             "lambdaFunction": "TwitchQuestions",
             "privacy": {
                 "open": true
             }
         },
         {
-            "name": "/channelquestions",
+            "name": "/questions",
             "lambdaFunction": "TwitchQuestions",
             "privacy": {
                 "open": true
@@ -33,8 +33,8 @@
     "privacy": {
         "auth": 0,
         "unauth": 0,
-        "authRoleName": "amplify-askjoshaquestion-dev-21830-authRole",
-        "unAuthRoleName": "amplify-askjoshaquestion-dev-21830-unauthRole"
+        "authRoleName": "amplify-askjoshaquestion-dev-21909-authRole",
+        "unAuthRoleName": "amplify-askjoshaquestion-dev-21909-unauthRole"
     },
     "dependsOn": [
         {
@@ -46,5 +46,5 @@
             ]
         }
     ],
-    "uuid": "b6e3a6d4"
+    "uuid": "203e9351"
 }

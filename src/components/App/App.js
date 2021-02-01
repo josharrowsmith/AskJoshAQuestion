@@ -11,7 +11,8 @@ export default () => {
     const [token, setToken] = useState('');
     const [channelId, setChannelId] = useState('')
     const [displayName, setDisplayName] = useState('')
-
+    const [form, setForm] = useState({ question: '' });
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         getTwitchData();
@@ -41,7 +42,7 @@ export default () => {
 
     async function fetchQuestions() {
         twitch.rig.log('getting questions', UserId)
-        await fetch(`${process.env.ROOT_URL}/questions?user_id=${UserId}`,{
+        await fetch(`${process.env.ROOT_URL}/channelquestions?channel_id=${channelId}`,{
             method: 'GET',
             headers: new Headers({'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`})
         })
@@ -60,7 +61,7 @@ export default () => {
             body: JSON.stringify({
                   user_id: `${UserId}`,
                   channel_id: `${channelId}`,
-                  question: "hey duuuude",
+                  question: form.question,
                   postedToForum: false,
                   displayName: displayName
             })
@@ -69,11 +70,36 @@ export default () => {
         .then(result => twitch.rig.log(result))
     }
 
+    const handleChange = e => {
+        setForm({
+          ...form,
+          [e.target.name]: e.target.value
+        });
+    };
+
+    const handleSubmit = async e => {
+        e.preventDefault();
+        const result = await AskQuestion();
+        console.log(result)
+    };
+
     return (
         <>
-            <h1>Get Questions</h1>
-            <p>{UserId}</p>
-            <button onClick={fetchQuestions} title="click">Ask Question</button>
+            <form onSubmit={handleSubmit}>
+                <br></br>
+                <label>Ask a Question</label>
+                <br></br>
+                <textarea  
+                type="text"
+                name='question'
+                onChange={handleChange}
+                placeholder='gooooo for it' />
+                <br></br>
+                <input type="submit" value="Submit" />
+            </form>
+            <div>
+                <button onClick={fetchQuestions}>Get Questions</button>
+            </div>
         </>
     )
 }

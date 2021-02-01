@@ -60,6 +60,7 @@ const getQuestions = async (userid) => {
   var params = {
     ExpressionAttributeValues: { ":userId":  userid}, 
     KeyConditionExpression: "user_id = :userId",
+    IndexName: "user_id-index",
     TableName: tableName
    };
 

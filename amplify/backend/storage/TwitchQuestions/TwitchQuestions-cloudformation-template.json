@@ -40,6 +40,11 @@
                 "AttributeDefinitions": [
                   
                   {
+                      "AttributeName": "id",
+                      "AttributeType": "S"
+                  }  , 
+                  
+                  {
                       "AttributeName": "user_id",
                       "AttributeType": "S"
                   }  , 
@@ -53,12 +58,12 @@
                 "KeySchema": [
                   
                   {
-                    "AttributeName": "user_id",
+                    "AttributeName": "id",
                     "KeyType": "HASH"
                   }  , 
                   
                   {
-                    "AttributeName": "channel_id",
+                    "AttributeName": "user_id",
                     "KeyType": "RANGE"
                   } 
                   
@@ -93,6 +98,29 @@
                         }
                     ]
                 }
+                
+                ,"GlobalSecondaryIndexes": [
+                  
+                    {
+                        "IndexName": "channel_id-index",
+                        "KeySchema": [
+                            
+                            {
+                                "AttributeName": "channel_id",
+                                "KeyType": "HASH"
+                            } 
+                            
+                        ],
+                        "Projection": {
+                            "ProjectionType": "ALL"
+                        },
+                        "ProvisionedThroughput": {
+                            "ReadCapacityUnits": "5",
+                            "WriteCapacityUnits": "5"
+                        }
+                    } 
+                  
+                ]
                 
             }
         }
