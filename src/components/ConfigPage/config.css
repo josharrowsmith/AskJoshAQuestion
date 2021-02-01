@@ -1,0 +1,127 @@
+* {
+    box-sizing: border-box;
+}
+.container {
+    background: #FAF9FA;
+    padding: 20px;
+    --twitch-purple: #6441A4;
+    --text-color-primary: #19171C;
+    --text-color-secondary: #6E6779;
+    --text-base-size: 12px;
+    font-size: var(--text-base-size);
+}
+
+.title {
+    font-size: 24px;
+    color: var(--text-color-primary);
+}
+
+.row {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.question-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow: hidden;
+    border: 1px solid #DAD8DE;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.04), 0px 2px 2px rgba(0, 0, 0, 0.02), 0px 2px 4px rgba(0, 0, 0, 0.06);
+    border-radius: 4px;
+}
+
+.question-list li:not(:last-child) .question-item {
+    border-bottom: 1px solid #DAD8DE;
+}
+
+.question-item {
+    background: #fff;
+    padding: 10px 20px;
+    will-change: background;
+    transition: background .15s ease;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.question-item:hover {
+    background: #FAF9FA;
+}
+
+.question-item__question {
+    font-size: 16px;
+    font-weight: 400;
+    margin: 0 0 4px;
+    color: var(--text-color-primary);
+}
+
+.question-item__submitted-by {
+    flex: 1 1 100%;
+    font-size: 12px;
+    margin: 0;
+    color: var(--text-color-secondary);
+}
+
+.question-item__answer {
+    font-size: 14px;
+}
+
+.question-item__button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    min-height: 30px;
+    min-width: 60px;
+    border-radius: 4px;
+    border: none;
+    font-weight: 400;
+    line-height: 1;
+    font-size: var(--text-base-size);
+}
+
+.question-item__answer-button {
+    color: var(--twitch-purple);
+    margin-top: -6px;
+    background: none;
+}
+
+.question-item__checkmark {
+    width: 24px;
+    height: 24px;
+    margin-top: -5px;
+}
+
+.question-item__answer-box {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+.question-item__answer-input {
+    flex: 1 0 100%;
+    min-height: 60px;
+    border: 1px solid #DAD8DE;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    padding: 10px;
+    font-size: var(--text-base-size);
+}
+
+.question-item__answer-input:focus {
+    border-color: var(--twitch-purple);
+}
+
+.question-item__answer-submit {
+    background-color: var(--twitch-purple);
+    color: #fff;
+}
+
+.question-item__answer-cancel {
+    border: 1px var(--twitch-purple) solid;
+    color: var(--twitch-purple);
+    margin-right: 4px;
+}

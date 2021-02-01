@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { setToken, isLoggedIn, getStream } from "../../util"
 // this is fucked but i can't be bother to fix it yet
 import 'regenerator-runtime/runtime';
+import  "./app.css"
 
 const twitch = window.Twitch.ext;
 
@@ -84,22 +85,31 @@ export default () => {
     };
 
     return (
-        <>
-            <form onSubmit={handleSubmit}>
-                <br></br>
-                <label>Ask a Question</label>
-                <br></br>
-                <textarea  
-                type="text"
-                name='question'
-                onChange={handleChange}
-                placeholder='gooooo for it' />
-                <br></br>
-                <input type="submit" value="Submit" />
-            </form>
-            <div>
-                <button onClick={fetchQuestions}>Get Questions</button>
+        <div class="dspClass">
+             <div class="container loginplease">
+                <h2 class="title">Ask A Question</h2>
+                <p>To use Ask A Question, you need to share your TwitchID with us
+                    <span id="authAQuestion">Click here</span>
+                </p>
             </div>
-        </>
+            <div class="container askQuestion">
+                <h2 class="title">Ask A Question</h2>
+                <textarea class="question-input" v-model="questionText" placeholder="Ask the broadcaster a question..."></textarea>
+                <div class="toolbar">
+                    <button class="askQuestionBtn"  variant="primary">Submit</button>
+                </div>
+            </div>
+            <div class="container questions">
+                <h3 class="title">Previous Questions </h3>
+                <ul class="question-list">
+                    <li>
+                        <div class="question-item">
+                            <p class="question-item__question"><span>Q:</span>dude</p>
+                            <p class="question-item__answer"><span>A:</span> cool</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
     )
 }
