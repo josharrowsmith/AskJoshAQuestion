@@ -11,7 +11,9 @@ export default () => {
     const [UserId, setUserId] = useState('');
     const [token, setToken] = useState('');
     const [channelId, setChannelId] = useState('')
-    const [result, setResult] = useState('')
+    const [result, setResult] = useState([])
+    const [form, setForm] = useState({ answer: '' });
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         getTwitchData();
@@ -45,19 +47,19 @@ export default () => {
         })
         .then(data => data.json())
         .then(data => {
-            setResult(data.Items)
-            console.log(data)
+            const array = Object.values(data.Items)
+            setResult(array)
         })
         .catch(err => twitch.rig.log("wtf"))
     }
 
-    async function answerQuestion() {
+    async function answerQuestion(id) {
         await fetch(`${process.env.ROOT_URL}/answer`,{
             method: 'put',
             headers: new Headers({'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}),
             body: JSON.stringify({
-                answer: 'true duude',
-                id: '6765705b-04ca-42c3-8e96-a374c8073089'
+                answer: form.answer,
+                id: id
             })
         })
         .then(data => data.json())
@@ -67,28 +69,44 @@ export default () => {
         .catch(err => twitch.rig.log("wtf"))
     }
 
+    const handleChange = e => {
+        setForm({
+          ...form,
+          [e.target.name]: e.target.value
+        });
+    };
+
     return (
         <div className="container">
         <div>
             <h3 className="title"> Channel Questions Test </h3> 
             <hr />
-            <ul className="question-list">
-                {/* {Object.entries(result).map(([key, val], i) => (
-                <li className="question-item">
-                    <h2 className="question-item__question">{val.question}</h2>
-                    <div className="row">
-                        <p className="question-item__submitted-by">{val.displayName}</p>
-                        <button className="question-item__button question-item__answer-button">Answer</button>
-                    </div> */}
-                    <p className="question-item__answer">answer</p>
-                    <div className="question-item__answer-box">
-                        <textarea type="text" className="question-item__answer-input"></textarea>
-                        <button className="question-item__button question-item__answer-cancel">Cancel</button>
-                        <button className="question-item__button question-item__answer-submit" onClick={answerQuestion}>Submit</button>
-                    </div>
-                {/* </li>
-                ))} */}
-            </ul>
+                <ul className="question-list">
+                    {result.map((val, i) => {
+                       console.log(i)
+                    return (
+                        <li className="question-item" key={i}>
+                            <h2 className="question-item__question">{val.question}</h2>
+                            <div className="row">
+                                <p className="question-item__submitted-by">{val.displayName}</p>
+                                <button className="question-item__button question-item__answer-button">Answer</button>
+                            </div>
+                            <p className="question-item__answer">answer</p>
+                            <div className="question-item__answer-box">
+                                <textarea 
+                                    type="text"
+                                    className="question-item__answer-input"
+                                    onChange={handleChange}
+                                    name='answer'>
+                                    {val.answer ? val.answer : ""}
+                                    </textarea>
+                                <button className="question-item__button question-item__answer-cancel">Cancel</button>
+                                <button className="question-item__button question-item__answer-submit" onClick={() => answerQuestion(val.id)}>Submit</button>
+                            </div>
+                        </li>
+                        )
+                    })}
+                </ul> 
         </div>
     </div>
     )

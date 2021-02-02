@@ -104,12 +104,12 @@ export default () => {
                          <p className="question-item__question">No Questions found</p>
                     )}
                     {Object.entries(result).map(([key, val], i) => { 
-                        console.log(key, val)
+                        // twitch.rig.log(val, i)
                         return (
                         <li key={key}>
                             <div className="question-item">
                                 <p className="question-item__question"><span>Q:</span>{val.question}</p>
-                                <p className="question-item__answer"><span>A:</span> there are none</p>
+                                <p className="question-item__answer"><span>A:</span>{val.answer}</p>
                             </div>
                         </li> 
                         )
