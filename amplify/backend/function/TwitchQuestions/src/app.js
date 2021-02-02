@@ -40,6 +40,13 @@ app.post('/question', async (req, res) => {
   res.json(put);
 });
 
+app.put('/answer', async (req, res) => {
+  // put a answer
+  console.log(req.body)
+  let answer = await updateQuestionAnswer(req.body);
+  res.json(answer);
+});
+
 const getChannelQuestions = async (channelid) => {
   var params2 = {
     ExpressionAttributeValues: { ":channelId":  channelid}, 
@@ -93,6 +100,30 @@ const postQuestion = async(questionBody) => {
   }
 
 }
+
+const updateQuestionAnswer = async(question) => {
+  var params = {
+    TableName:tableName,
+    Key:{
+        "id": question.id
+    },
+    UpdateExpression: "set answer=:answer",
+    ExpressionAttributeValues:{
+        ":answer": question.answer
+    },
+    ReturnValues:"UPDATED_NEW"
+  };
+
+  try{
+    let data = await docClient.update(params).promise();
+    console.log(data);
+    return data;
+  } catch(error) {
+      return error;
+  }
+}
+
+
 
 app.listen(3000, function() {
     console.log("App started")

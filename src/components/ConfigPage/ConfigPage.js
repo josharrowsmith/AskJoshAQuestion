@@ -51,28 +51,43 @@ export default () => {
         .catch(err => twitch.rig.log("wtf"))
     }
 
+    async function answerQuestion() {
+        await fetch(`${process.env.ROOT_URL}/answer`,{
+            method: 'put',
+            headers: new Headers({'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}),
+            body: JSON.stringify({
+                answer: 'true duude',
+                id: '6765705b-04ca-42c3-8e96-a374c8073089'
+            })
+        })
+        .then(data => data.json())
+        .then(data => {
+            console.log(data)
+        })
+        .catch(err => twitch.rig.log("wtf"))
+    }
+
     return (
-        <div class="container">
+        <div className="container">
         <div>
-            <h3 class="title"> Channel Questions Test </h3> 
+            <h3 className="title"> Channel Questions Test </h3> 
             <hr />
-            <ul class="question-list">
-                {Object.entries(result).map(([key, val], i) => (
-                <li class="question-item">
-                    <h2 class="question-item__question">{val.question}</h2>
-                    <div class="row">
-                        <p class="question-item__submitted-by">{val.displayName}</p>
-                        <img class="question-item__checkmark" v-if="showCheckMark[index]" src="../assets/checkmark.png" />
-                        <button class="question-item__button question-item__answer-button">Answer</button>
+            <ul className="question-list">
+                {/* {Object.entries(result).map(([key, val], i) => (
+                <li className="question-item">
+                    <h2 className="question-item__question">{val.question}</h2>
+                    <div className="row">
+                        <p className="question-item__submitted-by">{val.displayName}</p>
+                        <button className="question-item__button question-item__answer-button">Answer</button>
+                    </div> */}
+                    <p className="question-item__answer">answer</p>
+                    <div className="question-item__answer-box">
+                        <textarea type="text" className="question-item__answer-input"></textarea>
+                        <button className="question-item__button question-item__answer-cancel">Cancel</button>
+                        <button className="question-item__button question-item__answer-submit" onClick={answerQuestion}>Submit</button>
                     </div>
-                    <p class="question-item__answer">answer</p>
-                    <div class="question-item__answer-box">
-                        <textarea type="text" v-model="answerText[index]" class="question-item__answer-input"></textarea>
-                        <button class="question-item__button question-item__answer-cancel">Cancel</button>
-                        <button class="question-item__button question-item__answer-submit">Submit</button>
-                    </div>
-                </li>
-                ))}
+                {/* </li>
+                ))} */}
             </ul>
         </div>
     </div>

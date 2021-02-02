@@ -21,6 +21,13 @@
             "privacy": {
                 "open": true
             }
+        },
+        {
+            "name": "/answer",
+            "lambdaFunction": "TwitchQuestions",
+            "privacy": {
+                "open": true
+            }
         }
     ],
     "resourceName": "TwitchQuestions",
@@ -46,5 +53,5 @@
             ]
         }
     ],
-    "uuid": "203e9351"
+    "uuid": "0480002e"
 }
