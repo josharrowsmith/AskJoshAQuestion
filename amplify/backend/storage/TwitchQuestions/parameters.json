@@ -1,7 +1,5 @@
 {
     "tableName": "TwitchQuestions",
     "partitionKeyName": "id",
-    "partitionKeyType": "S",
-    "sortKeyName": "user_id",
-    "sortKeyType": "S"
+    "partitionKeyType": "S"
 }

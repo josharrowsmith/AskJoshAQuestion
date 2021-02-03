@@ -38,6 +38,7 @@ export default () => {
                 setChannelId(auth.channelId)
                 setDisplayName(user.displayName)
                 fetchQuestions(user)
+                twitch.rig.log(auth.token)
             })
         })
     }

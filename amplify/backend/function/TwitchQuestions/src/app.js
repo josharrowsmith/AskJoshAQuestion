@@ -2,10 +2,12 @@ var express = require('express')
 var bodyParser = require('body-parser')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
 const AWS = require('aws-sdk')
-var jwt = require('express-jwt')
+var expressJwt  = require('express-jwt')
+var jwt = require('jsonwebtoken')
 const uuidv4 = require('uuid/v4');
 const tableName = "TwitchQuestions-dev"
 const docClient = new AWS.DynamoDB.DocumentClient({region: 'us-east-1'})
+const secret = Buffer.from('', 'base64');
 
 // declare a new express app
 var app = express()
@@ -20,6 +22,17 @@ app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next()
 });
+
+app.use(expressJwt({ secret: secret, algorithms: ['HS256'],
+  getToken: function fromHeaderOrQuerystring (req) {
+    if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+        return req.headers.authorization.split(' ')[1];
+    } else if (req.query && req.query.token) {
+      return req.query.token;
+    }
+    return null;
+  }
+}));
 
 app.get('/channelquestions', async (req, res) => {
   // get list of all channel questions
@@ -37,6 +50,8 @@ app.post('/question', async (req, res) => {
   // post a question
   console.log(req.body);
   let put = await postQuestion(req.body);
+  let twitchpubsubPost = await postToTwitchPubSub('newquestion', token, channelId, clientId);
+  console.log(twitchpubsubPost)
   res.json(put);
 });
 
@@ -121,6 +136,19 @@ const updateQuestionAnswer = async(question) => {
   } catch(error) {
       return error;
   }
+}
+
+const makeServerToken = async(channelId, userId) => {
+  const payload = {
+      exp: Math.floor(Date.now() / 1000) + 30,
+      channel_id: channelId.toString(),
+      user_id: userId.toString(),
+      role: 'external',
+      pubsub_perms: {
+          send: ['broadcast']
+      }
+  };
+  return jwt.sign(payload, secret, { algorithm: 'HS256' });
 }
 
 
