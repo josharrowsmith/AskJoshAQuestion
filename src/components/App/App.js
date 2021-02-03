@@ -38,7 +38,7 @@ export default () => {
                 setChannelId(auth.channelId)
                 setDisplayName(user.displayName)
                 fetchQuestions(user)
-                twitch.rig.log(auth.token)
+                twitch.rig.log(auth, user)
             })
         })
     }
@@ -46,7 +46,7 @@ export default () => {
     async function fetchQuestions(user) {
         await fetch(`${process.env.ROOT_URL}/questions?user_id=${user.id}`,{
             method: 'GET',
-            headers: new Headers({'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`})
+            // headers: new Headers({'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`})
         })
         .then(data => data.json())
         .then(data => {

@@ -3,6 +3,7 @@ var bodyParser = require('body-parser')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
 const AWS = require('aws-sdk')
 var expressJwt  = require('express-jwt')
+const fetch = require('node-fetch');
 var jwt = require('jsonwebtoken')
 const uuidv4 = require('uuid/v4');
 const tableName = "TwitchQuestions-dev"
@@ -23,17 +24,6 @@ app.use(function(req, res, next) {
   next()
 });
 
-app.use(expressJwt({ secret: secret, algorithms: ['HS256'],
-  getToken: function fromHeaderOrQuerystring (req) {
-    if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
-        return req.headers.authorization.split(' ')[1];
-    } else if (req.query && req.query.token) {
-      return req.query.token;
-    }
-    return null;
-  }
-}));
-
 app.get('/channelquestions', async (req, res) => {
   // get list of all channel questions
   let data2 = await getChannelQuestions(req.query.channel_id);
@@ -48,9 +38,10 @@ app.get('/questions', async (req, res) => {
 
 app.post('/question', async (req, res) => {
   // post a question
-  console.log(req.body);
+  console.log(req);
   let put = await postQuestion(req.body);
-  let twitchpubsubPost = await postToTwitchPubSub('newquestion', token, channelId, clientId);
+  let token = await getToken(req)
+  let twitchpubsubPost = await postToTwitchPubSub("newquestion", token, "73628599", "");
   console.log(twitchpubsubPost)
   res.json(put);
 });
@@ -116,6 +107,15 @@ const postQuestion = async(questionBody) => {
 
 }
 
+const getToken = async (req) => {
+  if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+      return req.headers.authorization.split(' ')[1];
+  } else if (req.query && req.query.token) {
+    return req.query.token;
+  }
+  return null;
+}
+
 const updateQuestionAnswer = async(question) => {
   var params = {
     TableName:tableName,
@@ -137,6 +137,31 @@ const updateQuestionAnswer = async(question) => {
       return error;
   }
 }
+
+const postToTwitchPubSub = async(na, token, channelId, clientId) => {
+  // use twitch pubsub 
+  console.log("hey im running")
+  const message = "fuck you"
+    await fetch(`https://api.twitch.tv/extensions/message/${channelId}`, {
+      method: 'POST',
+      headers: {
+          'Authorization': `Bearer ${token}`,
+          'Client-Id': clientId,
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+          content_type: 'application/json',
+          message: message,
+          targets: ['broadcast']
+      })
+  })
+      .then(response => response.json())
+      .then(response => {
+          console.log("pub", response);
+      })
+      .catch(err => { console.log("pub",err) });
+}
+
 
 const makeServerToken = async(channelId, userId) => {
   const payload = {
