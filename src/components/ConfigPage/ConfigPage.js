@@ -40,7 +40,6 @@ export default () => {
     }
 
     async function fetchQuestions(auth) {
-        twitch.rig.log('getting questions', UserId)
         await fetch(`${process.env.ROOT_URL}/channelquestions?channel_id=${auth.channelId}`,{
             method: 'GET',
             headers: new Headers({'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`})
@@ -76,15 +75,16 @@ export default () => {
         });
     };
 
+
     return (
         <div className="container">
-        <div>
-            <h3 className="title"> Channel Questions Test </h3> 
-            <hr />
-                <ul className="question-list">
-                    {result.map((val, i) => {
-                       console.log(i)
-                    return (
+            <h3 className="title"> Channel Questions</h3> 
+                <>
+                {result.length == 0 ? (
+                    <h3 className="question-item__question">No Questions found</h3>
+                ) : (
+                    <ul className="question-list">
+                    {result.map((val, i) => (
                         <li className="question-item" key={i}>
                             <h2 className="question-item__question">{val.question}</h2>
                             <div className="row">
@@ -105,9 +105,10 @@ export default () => {
                             </div>
                         </li>
                         )
-                    })}
+                    )}
                 </ul> 
+                )}
+            </>
         </div>
-    </div>
     )
 }

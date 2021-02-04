@@ -41,7 +41,7 @@ app.post('/question', async (req, res) => {
   console.log(req);
   let put = await postQuestion(req.body);
   let token = await getToken(req)
-  let twitchpubsubPost = await postToTwitchPubSub("newquestion", token, "73628599", "");
+  let twitchpubsubPost = await postToTwitchPubSub("newquestion", token, channelId, clientId);
   console.log(twitchpubsubPost)
   res.json(put);
 });
@@ -138,10 +138,8 @@ const updateQuestionAnswer = async(question) => {
   }
 }
 
-const postToTwitchPubSub = async(na, token, channelId, clientId) => {
+const postToTwitchPubSub = async(message, token, channelId, clientId) => {
   // use twitch pubsub 
-  console.log("hey im running")
-  const message = "fuck you"
     await fetch(`https://api.twitch.tv/extensions/message/${channelId}`, {
       method: 'POST',
       headers: {
@@ -151,16 +149,13 @@ const postToTwitchPubSub = async(na, token, channelId, clientId) => {
       },
       body: JSON.stringify({
           content_type: 'application/json',
-          message: message,
+          message: JSON.stringify({ foo: "fuck" }),
           targets: ['broadcast']
       })
-  })
-      .then(response => response.json())
-      .then(response => {
-          console.log("pub", response);
-      })
-      .catch(err => { console.log("pub",err) });
-}
+    })
+    .then(response => console.log(response))
+    .catch(err => { console.log(err) });
+} 
 
 
 const makeServerToken = async(channelId, userId) => {

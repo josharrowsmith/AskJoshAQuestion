@@ -83,7 +83,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-askjoshaquestion-dev-94113-deployment",
-          "S3Key": "amplify-builds/TwitchQuestions-44596b69756759587765-build.zip"
+          "S3Key": "amplify-builds/TwitchQuestions-54354a5470475471796c-build.zip"
         }
       }
     },

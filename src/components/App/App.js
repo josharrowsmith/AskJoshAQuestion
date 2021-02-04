@@ -37,14 +37,13 @@ export default () => {
                 setToken(auth.token)
                 setChannelId(auth.channelId)
                 setDisplayName(user.displayName)
-                fetchQuestions(user)
-                twitch.rig.log(auth, user)
             })
         })
+        fetchQuestions()
     }
 
-    async function fetchQuestions(user) {
-        await fetch(`${process.env.ROOT_URL}/questions?user_id=${user.id}`,{
+    async function fetchQuestions() {
+        await fetch(`${process.env.ROOT_URL}/questions?user_id=${UserId}`,{
             method: 'GET',
             // headers: new Headers({'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`})
         })
@@ -56,7 +55,7 @@ export default () => {
     }
 
     async function AskQuestion() {
-        fetch(`${process.env.ROOT_URL}/question`, {
+        await fetch(`${process.env.ROOT_URL}/question`, {
             method: 'POST',
             headers: new Headers({'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}),
             body: JSON.stringify({
@@ -68,7 +67,7 @@ export default () => {
             })
         })
         .then(result => result.json())
-        .then(result => twitch.rig.log(result))
+        .then(result => fetchQuestions())
     }
 
     const handleChange = e => {
