@@ -17,7 +17,7 @@ export default () => {
 
     useEffect(() => {
         getTwitchData();
-    }, []);
+    }, [result]);
 
     async function getTwitchData() {
         twitch.onAuthorized((auth) => {
