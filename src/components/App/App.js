@@ -13,7 +13,8 @@ export default () => {
     const [token, setToken] = useState('');
     const [channelId, setChannelId] = useState('')
     const [displayName, setDisplayName] = useState('')
-    const [result, setResult] = useState("");
+    const [result, setResult] = useState('');
+    const [clientId, setClientId] = useState('')
     const { register, handleSubmit, watch, errors } = useForm();  
 
     useEffect(() => {
@@ -37,12 +38,14 @@ export default () => {
                 setUserId(user.id) 
                 setToken(auth.token)
                 setChannelId(auth.channelId)
-                setDisplayName(user.displayName)
+                setDisplayName(user.display_name)
+                setClientId(auth.clientId)
             })
         })
     }
 
     async function fetchQuestions() {
+        twitch.rig.log("im running bitch")
         await fetch(`${process.env.ROOT_URL}/questions?user_id=${UserId}`,{
             method: 'GET',
             // headers: new Headers({'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`})
@@ -63,7 +66,8 @@ export default () => {
                   channel_id: `${channelId}`,
                   question: question,
                   postedToForum: false,
-                  displayName: displayName
+                  displayName: `${displayName}`,
+                  clientId: `${clientId}`
             })
         })
         .then(result => result.json())

@@ -3,6 +3,8 @@ import { setToken, isLoggedIn, getStream } from "../../util"
 // this is fucked but i can't be bother to fix it yet
 import 'regenerator-runtime/runtime';
 import "./config.css"
+import Checkmark from "../../assets/images/checkmark.png"
+
 
 const twitch = window.Twitch.ext;
 
@@ -17,7 +19,7 @@ export default () => {
 
     useEffect(() => {
         getTwitchData();
-    }, [result]);
+    }, []);
 
     async function getTwitchData() {
         twitch.onAuthorized((auth) => {
@@ -75,7 +77,6 @@ export default () => {
         });
     };
 
-
     return (
         <div className="container">
             <h3 className="title"> Channel Questions</h3> 
@@ -88,10 +89,12 @@ export default () => {
                         <li className="question-item" key={i}>
                             <h2 className="question-item__question">{val.question}</h2>
                             <div className="row">
-                                <p className="question-item__submitted-by">{val.displayName}</p>
+                                <p class="question-item__submitted-by">Submitted by {val.displayName}</p>
+                                {val.answer && (
+                                    <img class="question-item__checkmark" src={Checkmark} />
+                                )}
                                 <button className="question-item__button question-item__answer-button">Answer</button>
                             </div>
-                            <p className="question-item__answer">answer</p>
                             <div className="question-item__answer-box">
                                 <textarea 
                                     type="text"

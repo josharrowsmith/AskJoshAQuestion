@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "build": "tailwind build src/tailwind.css -c tailwind.config.js -o src/styles/index.css",
+    "build": "webpack --mode production",
     "start": "webpack-dev-server --mode development",
     "host": "webpack-dev-server --mode development --devrig"
   },

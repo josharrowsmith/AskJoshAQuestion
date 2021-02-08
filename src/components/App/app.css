@@ -7,7 +7,7 @@ body, p {
 
 .container {
     background: #FAF9FA;
-    padding: 20px;
+    padding: 20px 20px 25px 20px;
 }
 .loggedin .loginplease { display: none; }
 .loginplease .askQuestion { display: none; }
@@ -37,7 +37,7 @@ body, p {
 
 .question-item p {
     margin: 0;
-    font-size: 16px;
+    font-size: 12px;
     line-height: 1.5;
 }
 
@@ -51,7 +51,11 @@ body, p {
 }
 
 .question-item__answer {
-    font-size: 14px;
+    font-size: 12px;
+}
+
+.question-item span {
+    margin-left: -10px;
 }
 
 .toolbar {
@@ -117,6 +121,7 @@ body, p {
     line-height: 29px;
     color: #19171C;
     margin: 0 0 10px;
+    font-weight: 900;
 }
 
 .inputBox {

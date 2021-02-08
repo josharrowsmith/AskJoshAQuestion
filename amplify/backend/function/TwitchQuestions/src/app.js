@@ -2,13 +2,13 @@ var express = require('express')
 var bodyParser = require('body-parser')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
 const AWS = require('aws-sdk')
-var expressJwt  = require('express-jwt')
+var expressJwt = require('express-jwt')
 const fetch = require('node-fetch');
 var jwt = require('jsonwebtoken')
 const uuidv4 = require('uuid/v4');
 const tableName = "TwitchQuestions-dev"
 const docClient = new AWS.DynamoDB.DocumentClient({region: 'us-east-1'})
-const secret = Buffer.from('', 'base64');
+const secret = Buffer.from('beOUqTTTQbhr4eu5ljsbDYp7Cwp0dVH8f/1GeVbW3hg=', 'base64');
 
 // declare a new express app
 var app = express()
@@ -24,6 +24,9 @@ app.use(function(req, res, next) {
   next()
 });
 
+// Auth protected routes for twitch extension
+// app.use(expressJwt({ secret: secret,  algorithms: ['HS256']}));
+
 app.get('/channelquestions', async (req, res) => {
   // get list of all channel questions
   let data2 = await getChannelQuestions(req.query.channel_id);
@@ -38,12 +41,11 @@ app.get('/questions', async (req, res) => {
 
 app.post('/question', async (req, res) => {
   // post a question
-  console.log(req);
   let put = await postQuestion(req.body);
+  let {channelId, clientId} = req.body;
   let token = await getToken(req)
   let twitchpubsubPost = await postToTwitchPubSub("newquestion", token, channelId, clientId);
-  console.log(twitchpubsubPost)
-  res.json(put);
+  res.json("posted quesiton");
 });
 
 app.put('/answer', async (req, res) => {
@@ -140,6 +142,7 @@ const updateQuestionAnswer = async(question) => {
 
 const postToTwitchPubSub = async(message, token, channelId, clientId) => {
   // use twitch pubsub 
+    console.log('hey im running')
     await fetch(`https://api.twitch.tv/extensions/message/${channelId}`, {
       method: 'POST',
       headers: {
@@ -149,10 +152,11 @@ const postToTwitchPubSub = async(message, token, channelId, clientId) => {
       },
       body: JSON.stringify({
           content_type: 'application/json',
-          message: JSON.stringify({ foo: "fuck" }),
+          message: JSON.stringify({ message }),
           targets: ['broadcast']
       })
     })
+    .then(response => response.json())
     .then(response => console.log(response))
     .catch(err => { console.log(err) });
 } 
