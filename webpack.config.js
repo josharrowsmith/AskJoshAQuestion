@@ -21,6 +21,11 @@ module.exports = (_env,argv)=> {
       outputHtml:"config.html",
       build:true
     },
+    Mobile:{
+      path:"./src/Mobile.js",
+      outputHtml:"mobile.html",
+      build:true
+    },
   }
 
   // call dotenv and it will return an Object with a parsed key 
