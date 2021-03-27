@@ -6,3 +6,6 @@ Twitch extension for asking questions to the streamer while offline, build with 
 ![Alt Text](./screenshots/questionAnswer.PNG)
 ![Alt Text](./screenshots/config.PNG)
 ![Alt Text](./screenshots/config2.PNG)
+
+# Todo
+fix auth problem with the new https://api.twitch.tv/helix/ changes

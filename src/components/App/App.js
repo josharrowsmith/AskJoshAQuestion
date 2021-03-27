@@ -6,6 +6,7 @@ import 'regenerator-runtime/runtime';
 import  "./app.css"
 
 const twitch = window.Twitch.ext;
+twitch.rig.log(process.env.OAUTH)
 
 export default () => {
     
@@ -29,7 +30,7 @@ export default () => {
             return;
         }
         fetch(`https://api.twitch.tv/helix/users?id=${authedUser.id}`, {
-                headers: new Headers({'Client-ID':  `${process.env.CLIENTID}`,  "Authorization": `Bearer ${process.env.OAUTH}` }),
+                headers: new Headers({'Client-ID':  `${process.env.CLIENTID}`,  "Authorization": "Bearer "  + process.env.OAUTH }),
                 mode: 'cors'
             })
             .then((res) => res.json())
@@ -41,6 +42,7 @@ export default () => {
                 setDisplayName(user.display_name)
                 setClientId(auth.clientId)
             })
+            .catch(err => twitch.rig.log(err))
         })
     }
 
@@ -58,6 +60,7 @@ export default () => {
     }
 
     async function AskQuestion(question) {
+        console.log(UserId, channelId)
         await fetch(`${process.env.ROOT_URL}/question`, {
             method: 'POST',
             headers: new Headers({'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}),
@@ -71,6 +74,7 @@ export default () => {
             })
         })
         .then(result => result.json())
+        .catch(err => twitch.rig.log(err))
         .then(result => fetchQuestions())
     }
 
