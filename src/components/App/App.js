@@ -6,7 +6,6 @@ import 'regenerator-runtime/runtime';
 import  "./app.css"
 
 const twitch = window.Twitch.ext;
-twitch.rig.log(process.env.OAUTH)
 
 export default () => {
     
@@ -16,25 +15,33 @@ export default () => {
     const [displayName, setDisplayName] = useState('')
     const [result, setResult] = useState('');
     const [clientId, setClientId] = useState('')
+    const [linked, setLinked] = useState(false)
     const { register, handleSubmit, watch, errors } = useForm();  
 
     useEffect(() => {
         getTwitchData();
-        fetchQuestions()
+        if(linked){
+            fetchQuestions()
+        }
     }, [UserId]);
 
     async function getTwitchData() {
         twitch.onAuthorized((auth) => {
+            console.log(auth)
             const authedUser = twitch.viewer;
+            console.log(authedUser.id)
         if (!authedUser.isLinked) {
-            return;
+            return
         }
+        setLinked(true)
         fetch(`https://api.twitch.tv/helix/users?id=${authedUser.id}`, {
-                headers: new Headers({'Client-ID':  `${process.env.CLIENTID}`,  "Authorization": "Bearer "  + process.env.OAUTH }),
+                headers: new Headers({"Client-ID":  `${process.env.CLIENTID}`,  "Authorization": `Bearer ${process.env.OAUTH}`}),
                 mode: 'cors'
             })
             .then((res) => res.json())
             .then(res => {
+                console.log(res)
+                twitch.rig.log(res)
                 const [user] = res.data;
                 setUserId(user.id) 
                 setToken(auth.token)
@@ -42,12 +49,20 @@ export default () => {
                 setDisplayName(user.display_name)
                 setClientId(auth.clientId)
             })
-            .catch(err => twitch.rig.log(err))
+            .catch(err =>{
+                twitch.rig.log(err)
+                console.log(err)
+            })
         })
     }
 
+    async function getData() {
+        console.log("getting id")
+        twitch.rig.log("getting id")
+        window.Twitch.ext.actions.requestIdShare();
+    }
+
     async function fetchQuestions() {
-        twitch.rig.log("im running bitch")
         await fetch(`${process.env.ROOT_URL}/questions?user_id=${UserId}`,{
             method: 'GET',
             // headers: new Headers({'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`})
@@ -84,7 +99,7 @@ export default () => {
         e.target.reset()
     };
 
-    return (
+    return linked ? (
         <div className="dspClassName">
             <div className="container askQuestion">
                 <form onSubmit={handleSubmit(onSubmit)} >
@@ -115,6 +130,12 @@ export default () => {
                     ))}
                 </ul>
             </div>
+           
+        </div>
+    ) : (
+        <div className="notLinked"> 
+            <h1>Please share user Id</h1>
+            <input type="submit" className="askQuestionBtn" onClick={getData} variant="primary"/>
         </div>
     )
 }
